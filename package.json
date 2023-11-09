@@ -20,7 +20,11 @@
   "homepage": "https://github.com/ishayankoo001/phonebook-Backend#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "morgan": "^1.10.0"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.0.1"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.4.10"

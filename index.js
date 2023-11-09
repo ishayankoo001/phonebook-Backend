@@ -1,8 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
-PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001
+const Person = require('./models/person')
 app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
@@ -37,18 +39,18 @@ app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
   })
   app.get('/api/persons', (request, response)=>{
-    response.json(persons)
+    Person.find({}).then(persons=>{
+      response.json(persons)  
+      console.log(JSON.stringify(persons))
+    })
   })
   app.get('/api/persons/:id', (request, response)=>{
-    id = Number(request.params.id)
-    console.log(id)
-    const person = persons.find(p=>p.id===id)
-    if(person){
+    Person.findById(request.params.id).then(person=>{
       response.json(person)
-    }
-    else{
+    }).catch(error=>{
+      console.log(error)
       response.status(404).end()
-    }
+    })
   })
   app.get('/info', (request, response)=>{
     response.send(`<h1>
@@ -85,11 +87,11 @@ app.get('/', (request, response) => {
         error: 'name must be unique'
       })
     }
-    const person = {
-      id: generateId(),
+    const personToAdd = new Person({
       name: body.name,
-      number: body.number
-    }
-    persons = persons.concat(person)
-    response.json(person)
+      number: body.number,
+    })
+    personToAdd.save().then(savedPerson=>{
+      response.json(savedPerson)
+    })
   })
