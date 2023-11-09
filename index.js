@@ -46,10 +46,14 @@ app.get('/', (request, response) => {
   })
   app.get('/api/persons/:id', (request, response)=>{
     Person.findById(request.params.id).then(person=>{
+      if(person){
       response.json(person)
+      }else{
+        response.status(404).end()
+      }
     }).catch(error=>{
       console.log(error)
-      response.status(404).end()
+      response.status(400).send({error: 'malformatted id'})
     })
   })
   app.get('/info', (request, response)=>{
@@ -80,11 +84,6 @@ app.get('/', (request, response) => {
     if(!body.number){
       return response.status(400).json({
         error: 'number missing'
-      })
-    }
-    if(persons.find(p=>p.name===body.name)){
-      return response.status(400).json({
-        error: 'name must be unique'
       })
     }
     const personToAdd = new Person({
